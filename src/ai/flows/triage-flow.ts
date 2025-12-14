@@ -27,30 +27,6 @@ export async function triageMessage(input: TriageInput): Promise<TriageOutput> {
   return triageMessageFlow(input);
 }
 
-const triagePrompt = ai.definePrompt({
-    name: 'triagePrompt',
-    input: { schema: TriageInputSchema },
-    output: { schema: TriageOutputSchema },
-    model: googleAI('gemini-1.5-flash-latest'),
-    prompt: `You are an expert support message triager. Analyze the following message and determine its category and priority.
-
-    **Categorization Rules:**
-    - **Billing**: Anything related to invoices, charges, payments, refunds, or subscriptions.
-    - **Bug**: Anything related to crashes, errors, something not loading, or unexpected behavior.
-    - **Feature Request**: Any suggestion for a new feature, integration, or improvement.
-    - **General**: Anything else.
-
-    **Prioritization Rules:**
-    - **High**: Billing issues, login problems, crashes, or anything preventing the user from using the core product.
-    - **Medium**: Most bugs that are not critical blockers.
-    - **Low**: Feature requests, general questions, and non-urgent inquiries.
-
-    **Message Title**: {{{title}}}
-    **Message Content**: {{{content}}}
-    `,
-});
-
-
 const triageMessageFlow = ai.defineFlow(
   {
     name: 'triageMessageFlow',
@@ -58,7 +34,29 @@ const triageMessageFlow = ai.defineFlow(
     outputSchema: TriageOutputSchema,
   },
   async (input) => {
-    const { output } = await triagePrompt(input);
+    const { output } = await ai.generate({
+        model: googleAI('gemini-1.5-flash-latest'),
+        prompt: `You are an expert support message triager. Analyze the following message and determine its category and priority.
+
+        **Categorization Rules:**
+        - **Billing**: Anything related to invoices, charges, payments, refunds, or subscriptions.
+        - **Bug**: Anything related to crashes, errors, something not loading, or unexpected behavior.
+        - **Feature Request**: Any suggestion for a new feature, integration, or improvement.
+        - **General**: Anything else.
+
+        **Prioritization Rules:**
+        - **High**: Billing issues, login problems, crashes, or anything preventing the user from using the core product.
+        - **Medium**: Most bugs that are not critical blockers.
+        - **Low**: Feature requests, general questions, and non-urgent inquiries.
+
+        **Message Title**: ${input.title}
+        **Message Content**: ${input.content}
+        `,
+        output: {
+            schema: TriageOutputSchema,
+        }
+    });
+
     if (!output) {
       throw new Error('Failed to get a valid response from the AI model.');
     }
