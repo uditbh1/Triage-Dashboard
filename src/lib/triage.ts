@@ -53,7 +53,7 @@ export async function triageMessageWithAI(title: string, content: string): Promi
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'nex-agi/deepseek-v3.1-nex-n1:free',
+        model: 'mistralai/mistral-7b-instruct:free',
         response_format: { type: "json_object" },
         messages: [
           {
