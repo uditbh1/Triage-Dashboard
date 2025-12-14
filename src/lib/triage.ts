@@ -4,17 +4,36 @@
 import type { MessageCategory, MessagePriority } from './types';
 
 const triagePrompt = `
-You are an expert support message triager. Analyze the following message and determine its category and priority.
+You are an expert customer support triage system. Your single most important job is to assign a category and a priority to a new support message.
 
-The possible categories are: "Bug", "Billing", "Feature Request", "General".
-The possible priorities are: "High", "Medium", "Low".
+You must follow these rules precisely. Do not deviate.
 
-Respond with a JSON object containing the "category" and "priority" keys. Do not include any other text or formatting in your response.
+**STEP 1: CHOOSE A CATEGORY**
+You must assign exactly one category from this list:
+- "Bug": For any issue reporting that something is broken, not working as expected, an error, a crash, or a visual glitch.
+- "Billing": For any issue related to payments, invoices, charges, refunds, subscriptions, or pricing plans.
+- "Feature Request": For any suggestion to add new functionality or improve an existing one.
+- "General": ONLY for questions, simple feedback, or messages that do not fit any other category. Do NOT use this for bugs or billing issues.
 
-For example:
+**STEP 2: CHOOSE A PRIORITY**
+After choosing a category, you must assign exactly one priority based on these strict rules. If multiple rules apply, the highest priority wins.
+- "High":
+  - ANY "Billing" issue.
+  - ANY "Bug" that prevents a user from using the service (e.g., login issues, crashes, can't save data).
+  - Any report of data loss.
+- "Medium":
+  - A "Bug" that is not critical but impacts user experience (e.g., UI glitches, slow performance).
+  - Questions about account management that are not billing-related.
+- "Low":
+  - ALL "Feature Request" issues.
+  - ALL "General" inquiries.
+
+**RESPONSE FORMAT**
+You MUST respond ONLY with a valid JSON object in the following format. Do not include any other text, markdown, or explanation.
+
 {
-  "category": "Bug",
-  "priority": "High"
+  "category": "Bug | Billing | Feature Request | General",
+  "priority": "High | Medium | Low"
 }
 `;
 
@@ -36,7 +55,7 @@ export async function triageMessageWithAI(title: string, content: string): Promi
           },
           {
             role: 'user',
-            content: `Title: ${title}\n\nContent: ${content}`,
+            content: `Triage the following message:\n\nTitle: ${title}\n\nContent: ${content}`,
           },
         ],
       }),
