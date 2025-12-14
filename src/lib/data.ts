@@ -3,6 +3,7 @@ import type { Message } from './types';
 export const initialMessages: Message[] = [
   {
     id: 'MSG-001',
+    title: 'Login Issue',
     content: "Can't login with my new password. The reset link seems to be broken.",
     customerName: 'John Doe',
     category: 'Bug',
@@ -12,6 +13,7 @@ export const initialMessages: Message[] = [
   },
   {
     id: 'MSG-002',
+    title: 'Incorrect Invoice',
     content: 'My latest invoice seems incorrect. It shows a double charge for last month.',
     customerName: 'Jane Smith',
     category: 'Billing',
@@ -21,6 +23,7 @@ export const initialMessages: Message[] = [
   },
   {
     id: 'MSG-003',
+    title: 'PDF Export Feature',
     content: 'It would be great if we could export reports to PDF format.',
     customerName: 'Peter Jones',
     category: 'Feature Request',
@@ -30,6 +33,7 @@ export const initialMessages: Message[] = [
   },
   {
     id: 'MSG-004',
+    title: 'Support Hours',
     content: 'What are your hours of operation for phone support?',
     customerName: 'Alice Williams',
     category: 'General',
@@ -39,6 +43,7 @@ export const initialMessages: Message[] = [
   },
   {
     id: 'MSG-005',
+    title: 'Dashboard Not Loading',
     content: 'The dashboard is not loading on Firefox. I just see a blank white page.',
     customerName: 'David Brown',
     category: 'Bug',
@@ -48,6 +53,7 @@ export const initialMessages: Message[] = [
   },
   {
     id: 'MSG-006',
+    title: 'Plan Upgrade',
     content: 'How do I upgrade my plan to include more users?',
     customerName: 'Sarah Miller',
     category: 'Billing',
@@ -57,6 +63,7 @@ export const initialMessages: Message[] = [
   },
   {
     id: 'MSG-007',
+    title: 'Slack Integration Idea',
     content: 'I have an idea for a new integration with Slack!',
     customerName: 'Michael Davis',
     category: 'Feature Request',
@@ -66,6 +73,7 @@ export const initialMessages: Message[] = [
   },
   {
     id: 'MSG-008',
+    title: 'UI Bug on Mobile',
     content: 'The new update looks great, but the main button is now off-center on mobile.',
     customerName: 'Emily Clark',
     category: 'Bug',
@@ -75,6 +83,7 @@ export const initialMessages: Message[] = [
   },
   {
     id: 'MSG-009',
+    title: 'Positive Feedback',
     content: 'Just wanted to say thank you for the excellent service.',
     customerName: 'Chris Wilson',
     category: 'General',
@@ -84,6 +93,7 @@ export const initialMessages: Message[] = [
   },
   {
     id: 'MSG-010',
+    title: 'Update Payment Method',
     content: 'My payment method is expiring, how can I update it?',
     customerName: 'Laura Taylor',
     category: 'Billing',

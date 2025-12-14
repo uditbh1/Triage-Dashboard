@@ -74,7 +74,7 @@ export function MessageTable({ messages, onResolveMessage, onRowClick }: Message
                 </TableCell>
                 <TableCell className="font-medium">{msg.customerName}</TableCell>
                 <TableCell className="max-w-[300px] truncate font-medium" title={msg.content}>
-                  {msg.content}
+                  {msg.title}
                 </TableCell>
                 <TableCell>
                   <Badge variant="outline" className="flex items-center gap-2">

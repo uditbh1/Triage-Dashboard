@@ -24,9 +24,9 @@ export function MessageDetailsDialog({ message, onOpenChange }: MessageDetailsDi
 
   return (
     <Dialog open={!!message} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[525px]">
         <DialogHeader>
-          <DialogTitle>Message Details</DialogTitle>
+          <DialogTitle>{message.title}</DialogTitle>
           <DialogDescription>
             Details for message ID: {message.id}
           </DialogDescription>
