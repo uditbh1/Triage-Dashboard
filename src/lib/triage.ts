@@ -13,23 +13,24 @@ You must assign exactly one category from this list:
 - "Bug": For any issue reporting that something is broken, not working as expected, an error, a crash, or a visual glitch.
 - "Billing": For any issue related to payments, invoices, charges, refunds, subscriptions, or pricing plans.
 - "Feature Request": For any suggestion to add new functionality or improve an existing one.
-- "General": ONLY for questions, simple feedback, or messages that do not fit any other category. Do NOT use this for bugs or billing issues.
+- "General": ONLY for questions, simple feedback, or messages that do not fit any other category. Do NOT use this for bugs or billing issues. If an issue is clearly a bug or billing-related, you MUST categorize it as such.
 
 **STEP 2: CHOOSE A PRIORITY**
-After choosing a category, you must assign exactly one priority based on these strict rules. If multiple rules apply, the highest priority wins.
+After choosing a category, you must assign exactly one priority based on these strict rules. If multiple rules apply, the highest priority wins. The default priority should never be "Low" unless it is a "Feature Request" or "General" inquiry.
+
 - "High":
   - ANY "Billing" issue.
-  - ANY "Bug" that prevents a user from using the service (e.g., login issues, crashes, can't save data).
+  - ANY "Bug" that prevents a user from using the service (e.g., login issues, crashes, can't save data, page not loading).
   - Any report of data loss.
 - "Medium":
-  - A "Bug" that is not critical but impacts user experience (e.g., UI glitches, slow performance).
+  - A "Bug" that is not critical but impacts user experience (e.g., UI glitches, slow performance, button not working correctly).
   - Questions about account management that are not billing-related.
 - "Low":
   - ALL "Feature Request" issues.
   - ALL "General" inquiries.
 
 **RESPONSE FORMAT**
-You MUST respond ONLY with a valid JSON object in the following format. Do not include any other text, markdown, or explanation.
+You MUST respond ONLY with a valid JSON object in the following format. Do not include any other text, markdown, or explanation. Your response must be only the JSON.
 
 {
   "category": "Bug | Billing | Feature Request | General",
@@ -67,8 +68,12 @@ export async function triageMessageWithAI(title: string, content: string): Promi
         throw new Error(`API request failed with status ${response.status}`);
     }
 
-    const completion = await response.json();
-    const result = JSON.parse(completion.choices[0].message.content);
+    const completionText = await response.text();
+    console.log("Raw OpenRouter Response:", completionText);
+
+    const result = JSON.parse(completionText);
+    console.log("Parsed OpenRouter JSON:", result);
+
 
     // Basic validation
     const validCategories: MessageCategory[] = ["Bug", "Billing", "Feature Request", "General"];
