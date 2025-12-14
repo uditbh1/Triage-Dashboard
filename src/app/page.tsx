@@ -1,3 +1,9 @@
+import TriageDashboard from "@/components/triage-assist/TriageDashboard";
+
 export default function Home() {
-  return <></>;
+  return (
+    <main>
+      <TriageDashboard />
+    </main>
+  );
 }
