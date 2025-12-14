@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import type { Message, MessageCategory, MessagePriority } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Bug, CreditCard, Lightbulb, MessageSquare, Check, RotateCcw } from "lucide-react";
-import { format, formatDistanceToNow } from "date-fns";
+import { ClientTime } from "./ClientTime";
 
 interface MessageTableProps {
   messages: Message[];
@@ -88,11 +88,7 @@ export function MessageTable({ messages, onResolveMessage, onRowClick }: Message
                   </Badge>
                 </TableCell>
                  <TableCell>
-                  <div className="flex flex-col">
-                    <span title={format(new Date(msg.timestamp), "PPP p")}>
-                      {formatDistanceToNow(new Date(msg.timestamp), { addSuffix: true })}
-                    </span>
-                  </div>
+                  <ClientTime timestamp={msg.timestamp} />
                 </TableCell>
                 <TableCell className="text-right">
                   <Button

@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import type { Message } from "@/lib/types";
+import { ClientTime } from "./ClientTime";
 import { format } from "date-fns";
 
 interface MessageDetailsDialogProps {
