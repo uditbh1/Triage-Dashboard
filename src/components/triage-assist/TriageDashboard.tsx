@@ -54,23 +54,32 @@ export default function TriageDashboard() {
   };
 
   const handleAddMessage = async (data: { title: string; content: string; customerName: string }) => {
-    const { category, priority } = await triageMessage({ title: data.title, content: data.content });
+    try {
+      const { category, priority } = await triageMessage({ title: data.title, content: data.content });
 
-    const newMessage: Message = {
-      id: `MSG-${String(messages.length + 1).padStart(3, '0')}`,
-      status: 'Open',
-      timestamp: new Date().toISOString(),
-      ...data,
-      category,
-      priority,
-    };
+      const newMessage: Message = {
+        id: `MSG-${String(messages.length + 1).padStart(3, '0')}`,
+        status: 'Open',
+        timestamp: new Date().toISOString(),
+        ...data,
+        category,
+        priority,
+      };
 
-    setMessages((prev) => [newMessage, ...prev]);
+      setMessages((prev) => [newMessage, ...prev]);
 
-    toast({
-        title: "Message Triaged & Added",
-        description: `New message from ${data.customerName} categorized as "${category}" with ${priority} priority.`,
-    });
+      toast({
+          title: "Message Triaged & Added",
+          description: `New message from ${data.customerName} categorized as "${category}" with ${priority} priority.`,
+      });
+    } catch (error) {
+      console.error("Failed to triage message:", error);
+      toast({
+        variant: "destructive",
+        title: "AI Triage Failed",
+        description: "Could not triage the message. Please try again or categorize it manually.",
+      });
+    }
   };
 
   const handleRowClick = (message: Message) => {
