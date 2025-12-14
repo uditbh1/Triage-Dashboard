@@ -13,17 +13,16 @@ You must assign exactly one category from this list:
 - "Bug": For any issue reporting that something is broken, not working as expected, an error, a crash, or a visual glitch.
 - "Billing": For any issue related to payments, invoices, charges, refunds, subscriptions, or pricing plans.
 - "Feature Request": For any suggestion to add new functionality or improve an existing one.
-- "General": ONLY for questions, simple feedback, or messages that do not fit any other category. Do NOT use this for bugs or billing issues. If an issue is clearly a bug or billing-related, you MUST categorize it as such.
+- "General": ONLY for questions, simple feedback, or messages that do not fit any other category. Do NOT use this for bugs or billing issues.
 
 **STEP 2: CHOOSE A PRIORITY**
-After choosing a category, you must assign exactly one priority based on these strict rules. If multiple rules apply, the highest priority wins. The default priority should never be "Low" unless it is a "Feature Request" or "General" inquiry.
+After choosing a category, you must assign exactly one priority based on these strict rules. If multiple rules apply, the highest priority wins.
 
 - "High":
   - ANY "Billing" issue.
   - ANY "Bug" that prevents a user from using the service (e.g., login issues, crashes, can't save data, page not loading).
-  - Any report of data loss.
 - "Medium":
-  - A "Bug" that is not critical but impacts user experience (e.g., UI glitches, slow performance, button not working correctly).
+  - A "Bug" that is not critical but impacts user experience (e.g., UI glitches, slow performance).
   - Questions about account management that are not billing-related.
 - "Low":
   - ALL "Feature Request" issues.
@@ -54,7 +53,7 @@ export async function triageMessageWithAI(title: string, content: string): Promi
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'openai/gpt-4o',
+        model: 'nex-agi/deepseek-v3.1-nex-n1:free',
         response_format: { type: "json_object" },
         messages: [
           {
@@ -76,8 +75,6 @@ export async function triageMessageWithAI(title: string, content: string): Promi
     }
 
     const jsonResponse = await response.json();
-    console.log("Full OpenRouter Response:", JSON.stringify(jsonResponse, null, 2));
-
     const resultText = jsonResponse.choices?.[0]?.message?.content;
 
     if (!resultText) {
@@ -86,7 +83,6 @@ export async function triageMessageWithAI(title: string, content: string): Promi
     }
 
     const result = JSON.parse(resultText);
-    console.log("Parsed Triage Result:", result);
 
     // Basic validation
     const validCategories: MessageCategory[] = ["Bug", "Billing", "Feature Request", "General"];
