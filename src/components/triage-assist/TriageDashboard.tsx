@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { MessageDetailsDialog } from "./MessageDetailsDialog";
 import { AddMessageForm } from "./AddMessageForm";
-import { triageMessage } from "@/ai/flows/triage-flow";
+import { categorizeMessage, prioritizeMessage } from "@/lib/triage";
 
 export default function TriageDashboard() {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
@@ -54,32 +54,25 @@ export default function TriageDashboard() {
   };
 
   const handleAddMessage = async (data: { title: string; content: string; customerName: string }) => {
-    try {
-      const { category, priority } = await triageMessage({ title: data.title, content: data.content });
+    
+    const category = categorizeMessage(data.title, data.content);
+    const priority = prioritizeMessage(data.title, data.content, category);
 
-      const newMessage: Message = {
-        id: `MSG-${String(messages.length + 1).padStart(3, '0')}`,
-        status: 'Open',
-        timestamp: new Date().toISOString(),
-        ...data,
-        category,
-        priority,
-      };
+    const newMessage: Message = {
+      id: `MSG-${String(messages.length + 1).padStart(3, '0')}`,
+      status: 'Open',
+      timestamp: new Date().toISOString(),
+      ...data,
+      category,
+      priority,
+    };
 
-      setMessages((prev) => [newMessage, ...prev]);
+    setMessages((prev) => [newMessage, ...prev]);
 
-      toast({
-          title: "Message Triaged & Added",
-          description: `New message from ${data.customerName} categorized as "${category}" with ${priority} priority.`,
-      });
-    } catch (error) {
-      console.error("Failed to triage message:", error);
-      toast({
-        variant: "destructive",
-        title: "AI Triage Failed",
-        description: "Could not triage the message. Please try again or categorize it manually.",
-      });
-    }
+    toast({
+        title: "Message Triaged & Added",
+        description: `New message from ${data.customerName} categorized as "${category}" with ${priority} priority.`,
+    });
   };
 
   const handleRowClick = (message: Message) => {
