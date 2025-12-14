@@ -5,6 +5,7 @@ export type MessageStatus = "Open" | "Resolved";
 export interface Message {
   id: string;
   content: string;
+  customerName: string;
   category: MessageCategory;
   priority: MessagePriority;
   status: MessageStatus;

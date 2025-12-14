@@ -4,6 +4,7 @@ export const initialMessages: Message[] = [
   {
     id: 'MSG-001',
     content: "Can't login with my new password. The reset link seems to be broken.",
+    customerName: 'John Doe',
     category: 'Bug',
     priority: 'High',
     status: 'Open',
@@ -12,6 +13,7 @@ export const initialMessages: Message[] = [
   {
     id: 'MSG-002',
     content: 'My latest invoice seems incorrect. It shows a double charge for last month.',
+    customerName: 'Jane Smith',
     category: 'Billing',
     priority: 'High',
     status: 'Open',
@@ -20,6 +22,7 @@ export const initialMessages: Message[] = [
   {
     id: 'MSG-003',
     content: 'It would be great if we could export reports to PDF format.',
+    customerName: 'Peter Jones',
     category: 'Feature Request',
     priority: 'Medium',
     status: 'Open',
@@ -28,6 +31,7 @@ export const initialMessages: Message[] = [
   {
     id: 'MSG-004',
     content: 'What are your hours of operation for phone support?',
+    customerName: 'Alice Williams',
     category: 'General',
     priority: 'Low',
     status: 'Open',
@@ -36,6 +40,7 @@ export const initialMessages: Message[] = [
   {
     id: 'MSG-005',
     content: 'The dashboard is not loading on Firefox. I just see a blank white page.',
+    customerName: 'David Brown',
     category: 'Bug',
     priority: 'High',
     status: 'Open',
@@ -44,6 +49,7 @@ export const initialMessages: Message[] = [
   {
     id: 'MSG-006',
     content: 'How do I upgrade my plan to include more users?',
+    customerName: 'Sarah Miller',
     category: 'Billing',
     priority: 'Medium',
     status: 'Resolved',
@@ -52,6 +58,7 @@ export const initialMessages: Message[] = [
   {
     id: 'MSG-007',
     content: 'I have an idea for a new integration with Slack!',
+    customerName: 'Michael Davis',
     category: 'Feature Request',
     priority: 'Low',
     status: 'Open',
@@ -60,6 +67,7 @@ export const initialMessages: Message[] = [
   {
     id: 'MSG-008',
     content: 'The new update looks great, but the main button is now off-center on mobile.',
+    customerName: 'Emily Clark',
     category: 'Bug',
     priority: 'Medium',
     status: 'Open',
@@ -68,6 +76,7 @@ export const initialMessages: Message[] = [
   {
     id: 'MSG-009',
     content: 'Just wanted to say thank you for the excellent service.',
+    customerName: 'Chris Wilson',
     category: 'General',
     priority: 'Low',
     status: 'Resolved',
@@ -76,6 +85,7 @@ export const initialMessages: Message[] = [
   {
     id: 'MSG-010',
     content: 'My payment method is expiring, how can I update it?',
+    customerName: 'Laura Taylor',
     category: 'Billing',
     priority: 'Medium',
     status: 'Open',

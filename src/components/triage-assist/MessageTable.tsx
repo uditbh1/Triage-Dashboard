@@ -6,11 +6,12 @@ import { Button } from "@/components/ui/button";
 import type { Message, MessageCategory, MessagePriority } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Bug, CreditCard, Lightbulb, MessageSquare, Check, RotateCcw } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 
 interface MessageTableProps {
   messages: Message[];
   onResolveMessage: (id: string) => void;
+  onRowClick: (message: Message) => void;
 }
 
 const categoryDetails: Record<MessageCategory, { icon: React.ElementType; color: string }> = {
@@ -26,7 +27,7 @@ const priorityBadgeVariant: Record<MessagePriority, "destructive" | "secondary" 
   Low: "outline",
 };
 
-export function MessageTable({ messages, onResolveMessage }: MessageTableProps) {
+export function MessageTable({ messages, onResolveMessage, onRowClick }: MessageTableProps) {
   if (messages.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 rounded-lg border border-dashed p-12 text-center">
@@ -47,6 +48,7 @@ export function MessageTable({ messages, onResolveMessage }: MessageTableProps) 
         <TableHeader>
           <TableRow>
             <TableHead className="w-[120px]">Priority</TableHead>
+            <TableHead>Customer</TableHead>
             <TableHead>Message</TableHead>
             <TableHead className="w-[180px]">Category</TableHead>
             <TableHead className="w-[120px]">Status</TableHead>
@@ -60,8 +62,9 @@ export function MessageTable({ messages, onResolveMessage }: MessageTableProps) 
             return (
               <TableRow
                 key={msg.id}
+                onClick={() => onRowClick(msg)}
                 className={cn(
-                  "transition-all",
+                  "transition-all cursor-pointer",
                   msg.status === "Resolved" && "bg-muted/50 text-muted-foreground",
                   msg.priority === "High" && msg.status === "Open" && "bg-destructive/10"
                 )}
@@ -69,7 +72,10 @@ export function MessageTable({ messages, onResolveMessage }: MessageTableProps) 
                 <TableCell>
                   <Badge variant={priorityBadgeVariant[msg.priority]}>{msg.priority}</Badge>
                 </TableCell>
-                <TableCell className="font-medium">{msg.content}</TableCell>
+                <TableCell className="font-medium">{msg.customerName}</TableCell>
+                <TableCell className="max-w-[300px] truncate font-medium" title={msg.content}>
+                  {msg.content}
+                </TableCell>
                 <TableCell>
                   <Badge variant="outline" className="flex items-center gap-2">
                     <CategoryIcon className="h-3.5 w-3.5" />
@@ -82,13 +88,20 @@ export function MessageTable({ messages, onResolveMessage }: MessageTableProps) 
                   </Badge>
                 </TableCell>
                  <TableCell>
-                  {formatDistanceToNow(new Date(msg.timestamp), { addSuffix: true })}
+                  <div className="flex flex-col">
+                    <span title={format(new Date(msg.timestamp), "PPP p")}>
+                      {formatDistanceToNow(new Date(msg.timestamp), { addSuffix: true })}
+                    </span>
+                  </div>
                 </TableCell>
                 <TableCell className="text-right">
                   <Button
                     variant={msg.status === "Open" ? "outline" : "ghost"}
                     size="sm"
-                    onClick={() => onResolveMessage(msg.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onResolveMessage(msg.id);
+                    }}
                   >
                     {msg.status === 'Open' ? <Check className="mr-2 h-4 w-4" /> : <RotateCcw className="mr-2 h-4 w-4" />}
                     {msg.status === 'Open' ? 'Resolve' : 'Re-open'}
