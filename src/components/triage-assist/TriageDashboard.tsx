@@ -15,14 +15,46 @@ import { MessageDetailsDialog } from "./MessageDetailsDialog";
 import { AddMessageForm } from "./AddMessageForm";
 import { triageMessageWithAI } from "@/lib/triage";
 
+const LOCAL_STORAGE_KEY = "triage-assist-messages";
+
 export default function TriageDashboard() {
-  const [messages, setMessages] = useState<Message[]>(initialMessages);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [categoryFilter, setCategoryFilter] = useState<MessageCategory | "all">("all");
   const [priorityFilter, setPriorityFilter] = useState<MessagePriority | "all">("all");
   const [showResolved, setShowResolved] = useState(true);
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
   const [lastResolvedId, setLastResolvedId] = useState<string | null>(null);
   const { toast } = useToast();
+
+  // Load messages from local storage on initial render
+  useEffect(() => {
+    try {
+      const storedMessages = localStorage.getItem(LOCAL_STORAGE_KEY);
+      if (storedMessages) {
+        setMessages(JSON.parse(storedMessages));
+      } else {
+        // If no messages in local storage, use initial messages and save them
+        setMessages(initialMessages);
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(initialMessages));
+      }
+    } catch (error) {
+      console.error("Failed to load messages from local storage:", error);
+      setMessages(initialMessages);
+    }
+  }, []);
+
+  // Save messages to local storage whenever they change
+  useEffect(() => {
+    // We don't save on the initial empty state
+    if (messages.length > 0) {
+      try {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(messages));
+      } catch (error) {
+        console.error("Failed to save messages to local storage:", error);
+      }
+    }
+  }, [messages]);
+
 
   useEffect(() => {
     if (lastResolvedId) {
