@@ -60,7 +60,7 @@ const triageMessageFlow = ai.defineFlow(
   async (input) => {
     const { output } = await triagePrompt(input);
     if (!output) {
-      throw new Error('Failed to triage message');
+      throw new Error('Failed to get a valid response from the AI model.');
     }
     return output;
   }
