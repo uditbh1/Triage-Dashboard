@@ -39,6 +39,13 @@ You MUST respond ONLY with a valid JSON object in the following format. Do not i
 `;
 
 export async function triageMessageWithAI(title: string, content: string): Promise<{ category: MessageCategory; priority: MessagePriority }> {
+  
+  if (!process.env.OPENROUTER_API_KEY) {
+    console.error("OPENROUTER_API_KEY is not set in the environment variables.");
+    // Fallback to a default triage in case of a missing API key
+    return { category: 'General', priority: 'Low' };
+  }
+
   try {
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
@@ -68,12 +75,18 @@ export async function triageMessageWithAI(title: string, content: string): Promi
         throw new Error(`API request failed with status ${response.status}`);
     }
 
-    const completionText = await response.text();
-    console.log("Raw OpenRouter Response:", completionText);
+    const jsonResponse = await response.json();
+    console.log("Full OpenRouter Response:", JSON.stringify(jsonResponse, null, 2));
 
-    const result = JSON.parse(completionText);
-    console.log("Parsed OpenRouter JSON:", result);
+    const resultText = jsonResponse.choices?.[0]?.message?.content;
 
+    if (!resultText) {
+        console.error("AI response did not contain the expected content.", jsonResponse);
+        throw new Error("Invalid AI response format.");
+    }
+
+    const result = JSON.parse(resultText);
+    console.log("Parsed Triage Result:", result);
 
     // Basic validation
     const validCategories: MessageCategory[] = ["Bug", "Billing", "Feature Request", "General"];
