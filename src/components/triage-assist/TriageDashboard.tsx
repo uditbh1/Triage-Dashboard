@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { MessageDetailsDialog } from "./MessageDetailsDialog";
 import { AddMessageForm } from "./AddMessageForm";
-import { categorizeMessage, prioritizeMessage } from "@/lib/triage";
+import { triageMessageWithAI } from "@/lib/triage";
 
 export default function TriageDashboard() {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
@@ -55,8 +55,7 @@ export default function TriageDashboard() {
 
   const handleAddMessage = async (data: { title: string; content: string; customerName: string }) => {
     
-    const category = categorizeMessage(data.title, data.content);
-    const priority = prioritizeMessage(data.title, data.content, category);
+    const { category, priority } = await triageMessageWithAI(data.title, data.content);
 
     const newMessage: Message = {
       id: `MSG-${String(messages.length + 1).padStart(3, '0')}`,
