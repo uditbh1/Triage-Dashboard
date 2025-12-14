@@ -1,8 +1,8 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { MessageCategory, MessagePriority } from "@/lib/types";
-import { Bug, CreditCard, Lightbulb, MessageSquare, AlertTriangle, Inbox, CheckCircle } from "lucide-react";
+import type { MessageCategory } from "@/lib/types";
+import { Bug, CreditCard, Lightbulb, AlertTriangle, Inbox, CheckCircle } from "lucide-react";
 
 interface SummaryCardsProps {
   stats: {
@@ -10,16 +10,9 @@ interface SummaryCardsProps {
     open: number;
     resolved: number;
     byCategory: Record<MessageCategory, number>;
-    byPriority: Record<"High", number>; // Only showing high priority for prominence
+    byPriority: Record<"High", number>; 
   };
 }
-
-const categoryIcons: Record<MessageCategory, React.ElementType> = {
-  "Bug": Bug,
-  "Billing": CreditCard,
-  "Feature Request": Lightbulb,
-  "General": MessageSquare
-};
 
 export function SummaryCards({ stats }: SummaryCardsProps) {
   return (
