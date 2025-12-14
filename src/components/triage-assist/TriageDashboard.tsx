@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import type { Message, MessageCategory, MessagePriority } from "@/lib/types";
 import { initialMessages } from "@/lib/data";
 import { SummaryCards } from "./SummaryCards";
@@ -18,24 +19,36 @@ export default function TriageDashboard() {
   const [priorityFilter, setPriorityFilter] = useState<MessagePriority | "all">("all");
   const [showResolved, setShowResolved] = useState(true);
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
+  const [lastResolvedId, setLastResolvedId] = useState<string | null>(null);
   const { toast } = useToast();
 
+  useEffect(() => {
+    if (lastResolvedId) {
+      toast({
+        title: "Message Resolved",
+        description: `Message ${lastResolvedId} has been marked as resolved.`,
+      });
+      setLastResolvedId(null); 
+    }
+  }, [lastResolvedId, toast]);
+
   const handleResolveMessage = (id: string) => {
+    let wasResolved = false;
     setMessages((prevMessages) =>
       prevMessages.map((msg) => {
         if (msg.id === id) {
           const newStatus = msg.status === "Open" ? "Resolved" : "Open";
           if (newStatus === "Resolved") {
-            toast({
-              title: "Message Resolved",
-              description: `Message ${id} has been marked as resolved.`,
-            });
+            wasResolved = true;
           }
           return { ...msg, status: newStatus };
         }
         return msg;
       })
     );
+    if (wasResolved) {
+      setLastResolvedId(id);
+    }
   };
 
   const handleRowClick = (message: Message) => {
