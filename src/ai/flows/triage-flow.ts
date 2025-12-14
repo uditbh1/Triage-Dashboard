@@ -9,6 +9,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import { googleAI } from '@genkit-ai/google-genai';
 
 const TriageInputSchema = z.object({
   title: z.string().describe('The title of the support message.'),
@@ -30,6 +31,7 @@ const triagePrompt = ai.definePrompt({
     name: 'triagePrompt',
     input: { schema: TriageInputSchema },
     output: { schema: TriageOutputSchema },
+    model: googleAI('gemini-1.5-flash-latest'),
     prompt: `You are an expert support message triager. Analyze the following message and determine its category and priority.
 
     **Categorization Rules:**
