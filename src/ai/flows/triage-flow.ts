@@ -7,8 +7,7 @@
  * - TriageOutput - The return type for the triageMessage function.
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import {z} from 'zod';
 
 const TriageInputSchema = z.object({
   title: z.string().describe('The title of the support message.'),
@@ -23,42 +22,60 @@ const TriageOutputSchema = z.object({
 export type TriageOutput = z.infer<typeof TriageOutputSchema>;
 
 export async function triageMessage(input: TriageInput): Promise<TriageOutput> {
-  return triageMessageFlow(input);
-}
 
-const triageMessageFlow = ai.defineFlow(
-  {
-    name: 'triageMessageFlow',
-    inputSchema: TriageInputSchema,
-    outputSchema: TriageOutputSchema,
-  },
-  async (input) => {
-    const { output } = await ai.generate({
-        model: 'google/gemini-1.5-flash-latest',
-        prompt: `You are an expert support message triager. Analyze the following message and determine its category and priority.
+  const prompt = `You are an expert support message triager. Analyze the following message and determine its category and priority.
 
-        **Categorization Rules:**
-        - **Billing**: Anything related to invoices, charges, payments, refunds, or subscriptions.
-        - **Bug**: Anything related to crashes, errors, something not loading, or unexpected behavior.
-        - **Feature Request**: Any suggestion for a new feature, integration, or improvement.
-        - **General**: Anything else.
+  **Categorization Rules:**
+  - **Billing**: Anything related to invoices, charges, payments, refunds, or subscriptions.
+  - **Bug**: Anything related to crashes, errors, something not loading, or unexpected behavior.
+  - **Feature Request**: Any suggestion for a new feature, integration, or improvement.
+  - **General**: Anything else.
 
-        **Prioritization Rules:**
-        - **High**: Billing issues, login problems, crashes, or anything preventing the user from using the core product.
-        - **Medium**: Most bugs that are not critical blockers.
-        - **Low**: Feature requests, general questions, and non-urgent inquiries.
+  **Prioritization Rules:**
+  - **High**: Billing issues, login problems, crashes, or anything preventing the user from using the core product.
+  - **Medium**: Most bugs that are not critical blockers.
+  - **Low**: Feature requests, general questions, and non-urgent inquiries.
 
-        **Message Title**: ${input.title}
-        **Message Content**: ${input.content}
-        `,
-        output: {
-            schema: TriageOutputSchema,
+  **Message Title**: ${input.title}
+  **Message Content**: ${input.content}
+  `;
+
+  try {
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'openai/gpt-4o',
+        messages: [
+          { role: 'system', content: 'You are an expert JSON provider. Your response must be a valid JSON object that conforms to the provided schema. Do not include any other text or markdown.' },
+          { role: 'user', content: prompt }
+        ],
+        response_format: {
+          type: 'json_object',
+          // Note: The 'schema' field for detailed JSON enforcement is not universally supported on all models/providers via the OpenAI-compatible API.
+          // We rely on the system prompt for structure.
         }
+      }),
     });
 
-    if (!output) {
-      throw new Error('Failed to get a valid response from the AI model.');
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`API call failed with status ${response.status}: ${errorText}`);
     }
-    return output;
+
+    const jsonResponse = await response.json();
+    const result = JSON.parse(jsonResponse.choices[0].message.content);
+    
+    // Validate the result against our Zod schema
+    const parsedResult = TriageOutputSchema.parse(result);
+
+    return parsedResult;
+
+  } catch (error) {
+    console.error('Error during triage API call:', error);
+    throw new Error('Failed to triage message with AI.');
   }
-);
+}
