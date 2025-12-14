@@ -5,8 +5,8 @@ export const ai = genkit({
   plugins: [
     googleAI({
       apiKey: process.env.OPENROUTER_API_KEY || '',
-      // baseUrl: 'https://openrouter.ai/api/v1',
+      baseUrl: 'https://openrouter.ai/api/v1/google',
     }),
   ],
-  // model: 'openai/gpt-3.5-turbo',
+  logLevel: 'debug',
 });

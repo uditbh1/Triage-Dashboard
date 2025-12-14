@@ -8,8 +8,6 @@
  */
 
 import {ai} from '@/ai/genkit';
-import type { MessageCategory, MessagePriority } from '@/lib/types';
-import { categorizeMessage, prioritizeMessage } from '@/lib/triage';
 import {z} from 'genkit';
 
 const TriageInputSchema = z.object({
@@ -28,19 +26,40 @@ export async function triageMessage(input: TriageInput): Promise<TriageOutput> {
   return triageMessageFlow(input);
 }
 
+const triagePrompt = ai.definePrompt({
+    name: 'triagePrompt',
+    input: { schema: TriageInputSchema },
+    output: { schema: TriageOutputSchema },
+    prompt: `You are an expert support message triager. Analyze the following message and determine its category and priority.
+
+    **Categorization Rules:**
+    - **Billing**: Anything related to invoices, charges, payments, refunds, or subscriptions.
+    - **Bug**: Anything related to crashes, errors, something not loading, or unexpected behavior.
+    - **Feature Request**: Any suggestion for a new feature, integration, or improvement.
+    - **General**: Anything else.
+
+    **Prioritization Rules:**
+    - **High**: Billing issues, login problems, crashes, or anything preventing the user from using the core product.
+    - **Medium**: Most bugs that are not critical blockers.
+    - **Low**: Feature requests, general questions, and non-urgent inquiries.
+
+    **Message Title**: {{{title}}}
+    **Message Content**: {{{content}}}
+    `,
+});
+
+
 const triageMessageFlow = ai.defineFlow(
   {
     name: 'triageMessageFlow',
     inputSchema: TriageInputSchema,
     outputSchema: TriageOutputSchema,
   },
-  async (input: TriageInput): Promise<TriageOutput> => {
-    const category = categorizeMessage(input.title, input.content);
-    const priority = prioritizeMessage(input.title, input.content, category);
-    
-    return {
-      category,
-      priority,
-    };
+  async (input) => {
+    const { output } = await triagePrompt(input);
+    if (!output) {
+      throw new Error('Failed to triage message');
+    }
+    return output;
   }
 );
