@@ -14,6 +14,8 @@ import { useToast } from "@/hooks/use-toast";
 import { MessageDetailsDialog } from "./MessageDetailsDialog";
 import { AddMessageForm } from "./AddMessageForm";
 import { triageMessageWithAI } from "@/lib/triage";
+import { ClientTime } from "./ClientTime";
+import { formatDistanceToNow } from "date-fns";
 
 const LOCAL_STORAGE_KEY = "triage-assist-messages";
 
@@ -25,6 +27,8 @@ export default function TriageDashboard() {
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
   const [lastResolvedId, setLastResolvedId] = useState<string | null>(null);
   const { toast } = useToast();
+  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
+  const [lastUpdatedLabel, setLastUpdatedLabel] = useState("");
 
   // Load messages from local storage on initial render
   useEffect(() => {
@@ -37,6 +41,7 @@ export default function TriageDashboard() {
         setMessages(initialMessages);
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(initialMessages));
       }
+      setLastUpdated(new Date().toISOString());
     } catch (error) {
       console.error("Failed to load messages from local storage:", error);
       setMessages(initialMessages);
@@ -66,6 +71,18 @@ export default function TriageDashboard() {
     }
   }, [lastResolvedId, toast]);
 
+    useEffect(() => {
+    if (lastUpdated) {
+      setLastUpdatedLabel(formatDistanceToNow(new Date(lastUpdated), { addSuffix: true }));
+
+      const interval = setInterval(() => {
+        setLastUpdatedLabel(formatDistanceToNow(new Date(lastUpdated), { addSuffix: true }));
+      }, 1000 * 60); // Update every minute
+
+      return () => clearInterval(interval);
+    }
+  }, [lastUpdated]);
+
   const handleResolveMessage = (id: string) => {
     let wasResolved = false;
     setMessages((prevMessages) =>
@@ -80,6 +97,7 @@ export default function TriageDashboard() {
         return msg;
       })
     );
+     setLastUpdated(new Date().toISOString());
     if (wasResolved) {
       setLastResolvedId(id);
     }
@@ -99,6 +117,7 @@ export default function TriageDashboard() {
     };
 
     setMessages((prev) => [newMessage, ...prev]);
+    setLastUpdated(new Date().toISOString());
 
     toast({
         title: "Message Triaged & Added",
@@ -144,9 +163,17 @@ export default function TriageDashboard() {
       <div className="grid gap-6 p-4 sm:p-6 lg:p-8">
         <header className="flex flex-col gap-1">
           <h1 className="text-3xl font-bold tracking-tight">TriageAssist Dashboard</h1>
-          <p className="text-muted-foreground">
-            Your support message inbox, automatically categorized and prioritized.
-          </p>
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <p>
+              Your support message inbox, automatically categorized and prioritized.
+            </p>
+            {lastUpdatedLabel && (
+                <>
+                <span className="text-sm">•</span>
+                <p className="text-sm">Last updated: {lastUpdatedLabel}</p>
+                </>
+            )}
+          </div>
         </header>
 
         <SummaryCards stats={stats} />
