@@ -1,3 +1,4 @@
+
 export type MessageCategory = "Bug" | "Billing" | "Feature Request" | "General";
 export type MessagePriority = "High" | "Medium" | "Low";
 export type MessageStatus = "Open" | "Resolved";

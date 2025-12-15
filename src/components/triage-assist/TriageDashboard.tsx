@@ -115,7 +115,7 @@ export default function TriageDashboard() {
       total: messages.length,
       open: 0,
       resolved: 0,
-      byCategory: { Bug: 0, Billing: 0, "Feature Request": 0, General: 0 },
+      byCategory: { All: 0, Bug: 0, Billing: 0, "Feature Request": 0, General: 0 },
       byPriority: { High: 0, Medium: 0, Low: 0 },
     };
     for (const msg of messages) {
@@ -127,6 +127,7 @@ export default function TriageDashboard() {
         s.resolved++;
       }
     }
+    s.byCategory.All = s.open;
     return s;
   }, [messages]);
 
