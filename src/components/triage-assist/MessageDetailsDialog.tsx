@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import type { Message } from "@/lib/types";
 import { ClientTime } from "./ClientTime";
 import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 interface MessageDetailsDialogProps {
   message: Message | null;
@@ -44,7 +45,12 @@ export function MessageDetailsDialog({ message, onOpenChange }: MessageDetailsDi
            <div className="grid grid-cols-4 items-center gap-4">
             <p className="text-sm text-muted-foreground col-span-1">Priority</p>
             <div className="col-span-3">
-                <Badge variant={message.priority === "High" ? "destructive" : message.priority === "Medium" ? "secondary" : "outline"}>
+                <Badge
+                  variant={message.priority === "High" ? "destructive" : message.priority === "Medium" ? "secondary" : "outline"}
+                  className={cn({
+                    'bg-amber-100 text-amber-800 border-amber-200 hover:bg-amber-200 dark:bg-amber-900/50 dark:text-amber-300 dark:border-amber-800': message.priority === 'Medium'
+                  })}
+                >
                     {message.priority}
                 </Badge>
             </div>

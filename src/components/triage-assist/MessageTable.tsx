@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -70,7 +71,14 @@ export function MessageTable({ messages, onResolveMessage, onRowClick }: Message
                 )}
               >
                 <TableCell>
-                  <Badge variant={priorityBadgeVariant[msg.priority]}>{msg.priority}</Badge>
+                  <Badge 
+                    variant={priorityBadgeVariant[msg.priority]}
+                    className={cn({
+                      'bg-amber-100 text-amber-800 border-amber-200 hover:bg-amber-200 dark:bg-amber-900/50 dark:text-amber-300 dark:border-amber-800': msg.priority === 'Medium'
+                    })}
+                  >
+                    {msg.priority}
+                  </Badge>
                 </TableCell>
                 <TableCell className="font-medium">{msg.customerName}</TableCell>
                 <TableCell className="max-w-[300px] truncate font-medium" title={msg.content}>
