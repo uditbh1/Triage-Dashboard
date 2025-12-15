@@ -49,6 +49,7 @@ export function MessageTable({ messages, onResolveMessage, onRowClick }: Message
         <TableHeader>
           <TableRow>
             <TableHead className="w-[120px]">Priority</TableHead>
+            <TableHead className="w-[120px]">Message ID</TableHead>
             <TableHead>Customer</TableHead>
             <TableHead>Message</TableHead>
             <TableHead className="w-[180px]">Category</TableHead>
@@ -80,6 +81,7 @@ export function MessageTable({ messages, onResolveMessage, onRowClick }: Message
                     {msg.priority}
                   </Badge>
                 </TableCell>
+                <TableCell className="font-mono text-xs">{msg.id}</TableCell>
                 <TableCell className="font-medium">{msg.customerName}</TableCell>
                 <TableCell className="max-w-[300px] truncate font-medium" title={msg.content}>
                   {msg.title}
