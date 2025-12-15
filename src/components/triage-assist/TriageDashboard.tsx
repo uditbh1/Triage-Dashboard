@@ -14,7 +14,6 @@ import { useToast } from "@/hooks/use-toast";
 import { MessageDetailsDialog } from "./MessageDetailsDialog";
 import { AddMessageForm } from "./AddMessageForm";
 import { triageMessageWithAI } from "@/lib/triage";
-import { ClientTime } from "./ClientTime";
 import { formatDistanceToNow } from "date-fns";
 
 const LOCAL_STORAGE_KEY = "triage-assist-messages";
@@ -162,14 +161,14 @@ export default function TriageDashboard() {
     <>
       <div className="grid gap-6 p-4 sm:p-6 lg:p-8">
         <header className="flex flex-col gap-1">
-          <h1 className="text-3xl font-bold tracking-tight">TriageAssist Dashboard</h1>
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <p>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">TriageAssist Dashboard</h1>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2 text-muted-foreground">
+            <p className="text-sm sm:text-base">
               Your support message inbox, automatically categorized and prioritized.
             </p>
             {lastUpdatedLabel && (
                 <>
-                <span className="text-sm">•</span>
+                <span className="text-sm hidden sm:inline">•</span>
                 <p className="text-sm">Last updated: {lastUpdatedLabel}</p>
                 </>
             )}
@@ -184,9 +183,9 @@ export default function TriageDashboard() {
                 <CardHeader>
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <CardTitle>Inbox</CardTitle>
-                    <div className="flex flex-wrap items-center gap-4">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full sm:w-auto">
                         <Select value={categoryFilter} onValueChange={(v) => setCategoryFilter(v as MessageCategory | "all")}>
-                        <SelectTrigger className="w-[180px]">
+                        <SelectTrigger className="w-full sm:w-[180px]">
                             <SelectValue placeholder="Filter by category" />
                         </SelectTrigger>
                         <SelectContent>
@@ -198,7 +197,7 @@ export default function TriageDashboard() {
                         </SelectContent>
                         </Select>
                         <Select value={priorityFilter} onValueChange={(v) => setPriorityFilter(v as MessagePriority | "all")}>
-                        <SelectTrigger className="w-[180px]">
+                        <SelectTrigger className="w-full sm:w-[180px]">
                             <SelectValue placeholder="Filter by priority" />
                         </SelectTrigger>
                         <SelectContent>

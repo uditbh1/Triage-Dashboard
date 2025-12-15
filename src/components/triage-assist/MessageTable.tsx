@@ -50,11 +50,11 @@ export function MessageTable({ messages, onResolveMessage, onRowClick }: Message
           <TableRow>
             <TableHead className="w-[120px]">Message ID</TableHead>
             <TableHead className="w-[120px]">Priority</TableHead>
-            <TableHead>Customer</TableHead>
+            <TableHead className="hidden md:table-cell">Customer</TableHead>
             <TableHead>Message</TableHead>
-            <TableHead className="w-[180px]">Category</TableHead>
+            <TableHead className="hidden lg:table-cell w-[180px]">Category</TableHead>
             <TableHead className="w-[120px]">Status</TableHead>
-            <TableHead className="w-[150px]">Received</TableHead>
+            <TableHead className="hidden sm:table-cell w-[150px]">Received</TableHead>
             <TableHead className="w-[120px] text-right">Action</TableHead>
           </TableRow>
         </TableHeader>
@@ -82,11 +82,11 @@ export function MessageTable({ messages, onResolveMessage, onRowClick }: Message
                     {msg.priority}
                   </Badge>
                 </TableCell>
-                <TableCell className="font-medium">{msg.customerName}</TableCell>
-                <TableCell className="max-w-[300px] truncate font-medium" title={msg.content}>
+                <TableCell className="font-medium hidden md:table-cell">{msg.customerName}</TableCell>
+                <TableCell className="max-w-[150px] sm:max-w-[200px] md:max-w-[300px] truncate font-medium" title={msg.content}>
                   {msg.title}
                 </TableCell>
-                <TableCell>
+                <TableCell className="hidden lg:table-cell">
                   <Badge variant="outline" className="flex items-center gap-2">
                     <CategoryIcon className="h-3.5 w-3.5" />
                     <span>{msg.category}</span>
@@ -97,7 +97,7 @@ export function MessageTable({ messages, onResolveMessage, onRowClick }: Message
                     {msg.status}
                   </Badge>
                 </TableCell>
-                 <TableCell>
+                 <TableCell className="hidden sm:table-cell">
                   <ClientTime timestamp={msg.timestamp} />
                 </TableCell>
                 <TableCell className="text-right">
@@ -108,9 +108,10 @@ export function MessageTable({ messages, onResolveMessage, onRowClick }: Message
                       e.stopPropagation();
                       onResolveMessage(msg.id);
                     }}
+                    className="w-full sm:w-auto"
                   >
-                    {msg.status === 'Open' ? <Check className="mr-2 h-4 w-4" /> : <RotateCcw className="mr-2 h-4 w-4" />}
-                    {msg.status === 'Open' ? 'Resolve' : 'Re-open'}
+                    <span className="sm:hidden">{msg.status === 'Open' ? <Check className="h-4 w-4" /> : <RotateCcw className="h-4 w-4" />}</span>
+                    <span className="hidden sm:inline-flex items-center">{msg.status === 'Open' ? <Check className="mr-2 h-4 w-4" /> : <RotateCcw className="mr-2 h-4 w-4" />} {msg.status === 'Open' ? 'Resolve' : 'Re-open'}</span>
                   </Button>
                 </TableCell>
               </TableRow>
