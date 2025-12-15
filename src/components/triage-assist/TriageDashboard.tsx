@@ -21,7 +21,7 @@ export default function TriageDashboard() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [categoryFilter, setCategoryFilter] = useState<MessageCategory | "all">("all");
   const [priorityFilter, setPriorityFilter] = useState<MessagePriority | "all">("all");
-  const [showResolved, setShowResolved] = useState(true);
+  const [showResolved, setShowResolved] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
   const [lastResolvedId, setLastResolvedId] = useState<string | null>(null);
   const { toast } = useToast();
@@ -134,7 +134,7 @@ export default function TriageDashboard() {
   const filteredMessages = useMemo(() => {
     return [...messages]
       .sort((a, b) => b.id.localeCompare(a.id))
-      .filter((msg) => (showResolved ? true : msg.status === "Open"))
+      .filter((msg) => msg.status === (showResolved ? "Resolved" : "Open"))
       .filter((msg) => categoryFilter === "all" || msg.category === categoryFilter)
       .filter((msg) => priorityFilter === "all" || msg.priority === priorityFilter);
   }, [messages, showResolved, categoryFilter, priorityFilter]);
