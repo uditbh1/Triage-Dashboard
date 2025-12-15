@@ -132,7 +132,8 @@ export default function TriageDashboard() {
   }, [messages]);
 
   const filteredMessages = useMemo(() => {
-    return messages
+    return [...messages]
+      .sort((a, b) => b.id.localeCompare(a.id))
       .filter((msg) => (showResolved ? true : msg.status === "Open"))
       .filter((msg) => categoryFilter === "all" || msg.category === categoryFilter)
       .filter((msg) => priorityFilter === "all" || msg.priority === priorityFilter);
