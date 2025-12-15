@@ -48,8 +48,8 @@ export function MessageTable({ messages, onResolveMessage, onRowClick }: Message
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[120px]">Priority</TableHead>
             <TableHead className="w-[120px]">Message ID</TableHead>
+            <TableHead className="w-[120px]">Priority</TableHead>
             <TableHead>Customer</TableHead>
             <TableHead>Message</TableHead>
             <TableHead className="w-[180px]">Category</TableHead>
@@ -71,6 +71,7 @@ export function MessageTable({ messages, onResolveMessage, onRowClick }: Message
                   msg.priority === "High" && msg.status === "Open" && "bg-destructive/10"
                 )}
               >
+                <TableCell className="font-mono text-xs">{msg.id}</TableCell>
                 <TableCell>
                   <Badge 
                     variant={priorityBadgeVariant[msg.priority]}
@@ -81,7 +82,6 @@ export function MessageTable({ messages, onResolveMessage, onRowClick }: Message
                     {msg.priority}
                   </Badge>
                 </TableCell>
-                <TableCell className="font-mono text-xs">{msg.id}</TableCell>
                 <TableCell className="font-medium">{msg.customerName}</TableCell>
                 <TableCell className="max-w-[300px] truncate font-medium" title={msg.content}>
                   {msg.title}
