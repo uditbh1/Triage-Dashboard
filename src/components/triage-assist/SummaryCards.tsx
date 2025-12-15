@@ -31,7 +31,7 @@ export function SummaryCards({ stats }: SummaryCardsProps) {
         {(Object.keys(stats.byCategory) as (MessageCategory | 'All')[]).map(category => {
             const Icon = categoryIcons[category as keyof typeof categoryIcons];
             return (
-                <Card key={category} className="h-32 w-full sm:w-auto">
+                <Card key={category} className="h-32 w-32">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">
                             {category === 'All' ? 'All Open' : `${category}s`}
@@ -45,7 +45,7 @@ export function SummaryCards({ stats }: SummaryCardsProps) {
             )
         })}
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-4 justify-start gap-4 pt-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 justify-start gap-2 pt-4">
         <Card className="bg-red-100 dark:bg-red-900/40 border-red-200 dark:border-red-800 w-32 h-32">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-red-900 dark:text-red-200">High</CardTitle>
